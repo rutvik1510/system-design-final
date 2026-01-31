@@ -1,0 +1,100 @@
+<div class="admin-container" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <!-- Sidebar -->
+  <nav class="sidebar bg-dark">
+    <div class="sidebar-header p-3 border-bottom border-secondary">
+      <h5 class="text-white mb-0">
+        <i class="bi bi-shield-lock-fill me-2"></i>
+        @if (!sidebarCollapsed()) {
+          <span>Admin Panel</span>
+        }
+      </h5>
+    </div>
+    
+    <ul class="nav flex-column p-2">
+      <li class="nav-item">
+        <a class="nav-link text-white" 
+           routerLink="/admin/dashboard" 
+           routerLinkActive="active">
+          <i class="bi bi-speedometer2 me-2"></i>
+          @if (!sidebarCollapsed()) {
+            <span>Dashboard</span>
+          }
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" 
+           routerLink="/admin/purchase-orders" 
+           routerLinkActive="active">
+          <i class="bi bi-file-earmark-text me-2"></i>
+          @if (!sidebarCollapsed()) {
+            <span>Purchase Orders</span>
+          }
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" 
+           routerLink="/admin/training-requests" 
+           routerLinkActive="active">
+          <i class="bi bi-send me-2"></i>
+          @if (!sidebarCollapsed()) {
+            <span>Training Requests</span>
+          }
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" 
+           routerLink="/admin/trainers" 
+           routerLinkActive="active">
+          <i class="bi bi-people me-2"></i>
+          @if (!sidebarCollapsed()) {
+            <span>Manage Trainers</span>
+          }
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" 
+           routerLink="/admin/invoices" 
+           routerLinkActive="active">
+          <i class="bi bi-receipt me-2"></i>
+          @if (!sidebarCollapsed()) {
+            <span>Invoices</span>
+          }
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer mt-auto p-3 border-top border-secondary">
+      <button class="btn btn-outline-light w-100" (click)="logout()">
+        <i class="bi bi-box-arrow-left me-2"></i>
+        @if (!sidebarCollapsed()) {
+          <span>Logout</span>
+        }
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+      <div class="container-fluid">
+        <button class="btn btn-link text-dark" (click)="toggleSidebar()">
+          <i class="bi bi-list fs-4"></i>
+        </button>
+        
+        <div class="d-flex align-items-center">
+          <span class="me-3">
+            <i class="bi bi-person-circle me-1"></i>
+            Welcome, {{ userName() }}
+          </span>
+          <span class="badge bg-primary">Admin</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="content-area p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

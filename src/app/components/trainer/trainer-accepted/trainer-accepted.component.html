@@ -1,0 +1,107 @@
+<div class="accepted-trainings">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-check-circle me-2"></i>
+      My Trainings
+    </h2>
+    <button class="btn btn-outline-success" (click)="loadData()">
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Accepted Trainings -->
+  @if (!isLoading()) {
+    @if (acceptedRequests().length > 0) {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Technology</th>
+                  <th>Duration</th>
+                  <th>Budget</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (request of acceptedRequests(); track request.id) {
+                  <tr>
+                    <td><strong>#{{ request.id }}</strong></td>
+                    <td>
+                      <i class="bi bi-building me-1 text-info"></i>
+                      {{ request.clientName }}
+                    </td>
+                    <td>
+                      <span class="badge bg-secondary">{{ request.technology }}</span>
+                    </td>
+                    <td>{{ request.duration }}</td>
+                    <td class="text-success fw-bold">{{ formatCurrency(request.budget) }}</td>
+                    <td>
+                      @if (request.status === 'Accepted') {
+                        <span class="badge bg-primary">
+                          <i class="bi bi-play-circle me-1"></i>
+                          In Progress
+                        </span>
+                      } @else if (request.status === 'Completed') {
+                        @if (hasInvoice(request.id)) {
+                          <span class="badge" [class.bg-warning]="getInvoiceStatus(request.id) === 'Pending'"
+                                [class.bg-success]="getInvoiceStatus(request.id) === 'Approved'"
+                                [class.bg-info]="getInvoiceStatus(request.id) === 'Paid'">
+                            <i class="bi bi-receipt me-1"></i>
+                            Invoice {{ getInvoiceStatus(request.id) }}
+                          </span>
+                        } @else {
+                          <span class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Completed
+                          </span>
+                        }
+                      }
+                    </td>
+                    <td>
+                      @if (request.status === 'Accepted') {
+                        <button class="btn btn-success btn-sm" (click)="markAsCompleted(request)">
+                          <i class="bi bi-check-lg me-1"></i>
+                          Mark Complete
+                        </button>
+                      } @else if (request.status === 'Completed' && !hasInvoice(request.id)) {
+                        <button class="btn btn-warning btn-sm" (click)="sendInvoice(request)">
+                          <i class="bi bi-receipt me-1"></i>
+                          Send Invoice
+                        </button>
+                      } @else {
+                        <span class="text-muted small">-</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center p-5 text-muted">
+          <i class="bi bi-check-circle fs-1 d-block mb-3"></i>
+          <h5>No Accepted Trainings Yet</h5>
+          <p>Trainings you accept will appear here.</p>
+        </div>
+      </div>
+    }
+  }
+</div>

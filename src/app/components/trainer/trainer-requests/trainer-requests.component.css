@@ -1,0 +1,11 @@
+.card {
+  border-radius: 12px;
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.card-footer {
+  border-radius: 0 0 12px 12px !important;
+}

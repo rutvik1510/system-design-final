@@ -1,0 +1,156 @@
+<div class="purchase-orders">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-file-earmark-text me-2"></i>
+      Purchase Orders
+    </h2>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Purchase Orders Table -->
+  @if (!isLoading()) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        @if (purchaseOrders().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Client Name</th>
+                  <th>Technology</th>
+                  <th>Duration</th>
+                  <th>Budget</th>
+                  <th>Status</th>
+                  <th>Assigned Trainer</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (po of purchaseOrders(); track po.id) {
+                  <tr>
+                    <td><strong>#{{ po.id }}</strong></td>
+                    <td>{{ po.clientName }}</td>
+                    <td>
+                      <span class="badge bg-secondary">{{ po.technology }}</span>
+                    </td>
+                    <td>{{ po.duration }}</td>
+                    <td>{{ formatCurrency(po.budget) }}</td>
+                    <td>
+                      <span class="badge" [class]="getStatusBadgeClass(po.status)">
+                        {{ po.status }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (po.assignedTrainerName) {
+                        <span class="text-success">
+                          <i class="bi bi-person-check me-1"></i>
+                          {{ po.assignedTrainerName }}
+                        </span>
+                      } @else {
+                        <span class="text-muted">Not Assigned</span>
+                      }
+                    </td>
+                    <td>{{ formatDate(po.createdAt) }}</td>
+                    <td>
+                      @if (po.status === 'Pending') {
+                        <button class="btn btn-sm btn-primary" 
+                                (click)="openAssignModal(po)"
+                                [disabled]="trainers().length === 0">
+                          <i class="bi bi-person-plus me-1"></i>
+                          Assign Trainer
+                        </button>
+                      } @else {
+                        <span class="text-muted small">
+                          @if (po.status === 'Assigned' || po.status === 'Accepted') {
+                            <i class="bi bi-check-circle text-success me-1"></i>
+                            Processed
+                          }
+                        </span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center p-5 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+            <h5>No Purchase Orders Yet</h5>
+            <p>Purchase orders from clients will appear here.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (trainers().length === 0 && !isLoading()) {
+    <div class="alert alert-warning mt-3">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      No trainers available. Please add trainers first to assign them to purchase orders.
+    </div>
+  }
+</div>
+
+<!-- Assign Trainer Modal -->
+@if (showAssignModal()) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="bi bi-person-plus me-2"></i>
+            Assign Trainer
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          @if (selectedPO()) {
+            <div class="mb-3 p-3 bg-light rounded">
+              <h6>Purchase Order Details</h6>
+              <p class="mb-1"><strong>Client:</strong> {{ selectedPO()!.clientName }}</p>
+              <p class="mb-1"><strong>Technology:</strong> {{ selectedPO()!.technology }}</p>
+              <p class="mb-1"><strong>Duration:</strong> {{ selectedPO()!.duration }}</p>
+              <p class="mb-0"><strong>Budget:</strong> {{ formatCurrency(selectedPO()!.budget) }}</p>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Select Trainer</label>
+              <select class="form-select" 
+                      [ngModel]="selectedTrainerId()"
+                      (ngModelChange)="selectedTrainerId.set($event)">
+                <option [ngValue]="null">-- Select a Trainer --</option>
+                @for (trainer of trainers(); track trainer.id) {
+                  <option [ngValue]="trainer.id">
+                    {{ trainer.name }} - {{ trainer.expertise }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="button" 
+                  class="btn btn-primary" 
+                  (click)="assignTrainer()"
+                  [disabled]="!selectedTrainerId()">
+            <i class="bi bi-send me-1"></i>
+            Assign & Send Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

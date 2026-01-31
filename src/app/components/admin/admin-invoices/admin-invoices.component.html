@@ -1,0 +1,264 @@
+<div class="admin-invoices">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-receipt me-2"></i>
+      Invoice Management
+    </h2>
+    <button class="btn btn-outline-primary" (click)="loadData()">
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading()) {
+    <!-- Trainer Invoices (Pending Approval) -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-warning bg-opacity-25">
+        <h5 class="mb-0">
+          <i class="bi bi-hourglass-split me-2"></i>
+          Trainer Invoices (Pending Approval)
+          <span class="badge bg-warning text-dark ms-2">
+            {{ pendingTrainerInvoices().length }}
+          </span>
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        @if (pendingTrainerInvoices().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Trainer</th>
+                  <th>Technology</th>
+                  <th>Duration</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (invoice of pendingTrainerInvoices(); track invoice.id) {
+                  <tr>
+                    <td><strong>INV-{{ invoice.id }}</strong></td>
+                    <td>
+                      <i class="bi bi-person me-1 text-success"></i>
+                      {{ invoice.trainerName }}
+                    </td>
+                    <td><span class="badge bg-secondary">{{ invoice.technology }}</span></td>
+                    <td>{{ invoice.duration }}</td>
+                    <td class="text-success fw-bold">{{ formatCurrency(invoice.trainingAmount) }}</td>
+                    <td>{{ formatDate(invoice.createdAt) }}</td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" (click)="openCommissionModal(invoice)">
+                        <i class="bi bi-check-lg me-1"></i>
+                        Process
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center p-4 text-muted">
+            <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+            No pending trainer invoices
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Approved Trainer Invoices -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-success bg-opacity-25">
+        <h5 class="mb-0">
+          <i class="bi bi-check-circle me-2"></i>
+          Approved Trainer Invoices
+          <span class="badge bg-success ms-2">
+            {{ approvedTrainerInvoices().length }}
+          </span>
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        @if (approvedTrainerInvoices().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Trainer</th>
+                  <th>Technology</th>
+                  <th>Amount</th>
+                  <th>Approved On</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (invoice of approvedTrainerInvoices(); track invoice.id) {
+                  <tr>
+                    <td><strong>INV-{{ invoice.id }}</strong></td>
+                    <td>{{ invoice.trainerName }}</td>
+                    <td><span class="badge bg-secondary">{{ invoice.technology }}</span></td>
+                    <td class="text-success fw-bold">{{ formatCurrency(invoice.trainingAmount) }}</td>
+                    <td>{{ invoice.approvedAt ? formatDate(invoice.approvedAt) : '-' }}</td>
+                    <td>
+                      <span class="badge" [class]="getStatusBadgeClass(invoice.status)">
+                        {{ invoice.status }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center p-4 text-muted">
+            <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+            No approved invoices yet
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Client Invoices -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-info bg-opacity-25">
+        <h5 class="mb-0">
+          <i class="bi bi-building me-2"></i>
+          Client Invoices
+          <span class="badge bg-info ms-2">{{ clientInvoices().length }}</span>
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        @if (clientInvoices().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Client</th>
+                  <th>Technology</th>
+                  <th>Training Cost</th>
+                  <th>Commission</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (invoice of clientInvoices(); track invoice.id) {
+                  <tr>
+                    <td><strong>INV-{{ invoice.id }}</strong></td>
+                    <td>
+                      <i class="bi bi-building me-1 text-info"></i>
+                      {{ invoice.clientName }}
+                    </td>
+                    <td><span class="badge bg-secondary">{{ invoice.technology }}</span></td>
+                    <td>{{ formatCurrency(invoice.trainingAmount) }}</td>
+                    <td>
+                      <span class="text-warning">
+                        {{ formatCurrency(invoice.commissionAmount || 0) }}
+                        <small>({{ invoice.commissionPercent }}%)</small>
+                      </span>
+                    </td>
+                    <td class="text-success fw-bold">{{ formatCurrency(invoice.totalAmount) }}</td>
+                    <td>
+                      <span class="badge" [class]="getStatusBadgeClass(invoice.status)">
+                        {{ invoice.status }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (invoice.status === 'Pending') {
+                        <button class="btn btn-success btn-sm" (click)="markAsPaid(invoice)">
+                          <i class="bi bi-cash me-1"></i>
+                          Mark Paid
+                        </button>
+                      } @else {
+                        <span class="text-muted small">-</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center p-4 text-muted">
+            <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+            No client invoices yet
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Commission Modal -->
+@if (showCommissionModal() && selectedInvoice()) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="bi bi-calculator me-2"></i>
+            Add Commission & Send to Client
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-4 p-3 bg-light rounded">
+            <h6 class="text-muted mb-2">Invoice Details</h6>
+            <p class="mb-1"><strong>Trainer:</strong> {{ selectedInvoice()!.trainerName }}</p>
+            <p class="mb-1"><strong>Technology:</strong> {{ selectedInvoice()!.technology }}</p>
+            <p class="mb-1"><strong>Duration:</strong> {{ selectedInvoice()!.duration }}</p>
+            <p class="mb-0"><strong>Training Amount:</strong> 
+              <span class="text-success">{{ formatCurrency(selectedInvoice()!.trainingAmount) }}</span>
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Commission Percentage (%)</label>
+            <input type="number" class="form-control" 
+                   [ngModel]="commissionPercent()"
+                   (ngModelChange)="commissionPercent.set($event)"
+                   min="0" max="50" step="1">
+          </div>
+
+          <div class="p-3 bg-warning bg-opacity-10 rounded">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Training Amount:</span>
+              <span>{{ formatCurrency(selectedInvoice()!.trainingAmount) }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Commission ({{ commissionPercent() }}%):</span>
+              <span class="text-warning">+ {{ formatCurrency(calculateCommission()) }}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between fw-bold">
+              <span>Total for Client:</span>
+              <span class="text-success">{{ formatCurrency(calculateTotal()) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn btn-success" (click)="approveAndSendToClient()">
+            <i class="bi bi-send me-1"></i>
+            Approve & Send to Client
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

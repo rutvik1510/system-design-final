@@ -1,0 +1,288 @@
+<div class="trainer-profile">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-person-badge me-2"></i>
+      My Profile
+    </h2>
+    @if (trainer() && !isEditing()) {
+      <button class="btn btn-primary" (click)="startEditing()">
+        <i class="bi bi-pencil me-1"></i>
+        Edit Profile
+      </button>
+    }
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- No Profile Found -->
+  @if (!isLoading() && !trainer()) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center p-5 text-muted">
+        <i class="bi bi-person-x fs-1 d-block mb-3"></i>
+        <h5>Profile Not Found</h5>
+        <p>Your trainer profile has not been set up yet. Please contact admin.</p>
+      </div>
+    </div>
+  }
+
+  <!-- Profile View Mode -->
+  @if (!isLoading() && trainer() && !isEditing()) {
+    <div class="row g-4">
+      <!-- Profile Card -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="profile-avatar bg-success text-white mx-auto mb-3">
+              {{ trainer()!.name.charAt(0).toUpperCase() }}
+            </div>
+            <h4 class="mb-1">{{ trainer()!.name }}</h4>
+            <p class="text-muted mb-3">{{ trainer()!.email }}</p>
+            <span class="badge fs-6" [class]="getAvailabilityBadgeClass(trainer()!.availability)">
+              {{ trainer()!.availability }}
+            </span>
+            
+            <hr class="my-4">
+            
+            <div class="d-flex justify-content-around text-center">
+              <div>
+                <h4 class="mb-0 text-success">{{ trainer()!.rating }}</h4>
+                <small class="text-muted">Rating</small>
+              </div>
+              <div>
+                <h4 class="mb-0 text-primary">{{ trainer()!.totalTrainings }}</h4>
+                <small class="text-muted">Trainings</small>
+              </div>
+              <div>
+                <h4 class="mb-0 text-info">{{ trainer()!.yearsOfExperience }}</h4>
+                <small class="text-muted">Years Exp</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Card -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle me-2 text-primary"></i>
+              Profile Details
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Bio -->
+            <div class="mb-4">
+              <h6 class="text-muted">About Me</h6>
+              <p>{{ trainer()!.bio || 'No bio added yet.' }}</p>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h6 class="text-muted">Phone</h6>
+                <p><i class="bi bi-telephone me-2"></i>{{ trainer()!.phone }}</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-muted">Hourly Rate</h6>
+                <p><i class="bi bi-currency-dollar me-2"></i>${{ trainer()!.hourlyRate }}/hour</p>
+              </div>
+            </div>
+
+            <!-- Expertise -->
+            <div class="mb-4">
+              <h6 class="text-muted">Technologies & Expertise</h6>
+              <div class="d-flex flex-wrap gap-2">
+                @for (tech of trainer()!.expertise; track tech) {
+                  <span class="badge bg-primary">{{ tech }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="mb-4">
+              <h6 class="text-muted">Certifications</h6>
+              @if (trainer()!.certifications && trainer()!.certifications.length > 0) {
+                <ul class="list-unstyled">
+                  @for (cert of trainer()!.certifications; track cert) {
+                    <li class="mb-1">
+                      <i class="bi bi-award text-warning me-2"></i>{{ cert }}
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="text-muted">No certifications added yet.</p>
+              }
+            </div>
+
+            <!-- LinkedIn -->
+            @if (trainer()!.linkedIn) {
+              <div>
+                <h6 class="text-muted">LinkedIn</h6>
+                <a [href]="'https://' + trainer()!.linkedIn" target="_blank" class="text-decoration-none">
+                  <i class="bi bi-linkedin me-2"></i>{{ trainer()!.linkedIn }}
+                </a>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Profile Edit Mode -->
+  @if (!isLoading() && trainer() && isEditing()) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">
+          <i class="bi bi-pencil-square me-2 text-primary"></i>
+          Edit Profile
+        </h5>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="saveProfile()">
+          <div class="row g-4">
+            <!-- Basic Info -->
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control"
+                     [ngModel]="editForm().name"
+                     (ngModelChange)="updateFormField('name', $event)"
+                     name="name">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control"
+                     [ngModel]="editForm().email"
+                     (ngModelChange)="updateFormField('email', $event)"
+                     name="email">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="text" class="form-control"
+                     [ngModel]="editForm().phone"
+                     (ngModelChange)="updateFormField('phone', $event)"
+                     name="phone">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Years of Experience</label>
+              <input type="number" class="form-control"
+                     [ngModel]="editForm().yearsOfExperience"
+                     (ngModelChange)="updateFormField('yearsOfExperience', $event)"
+                     name="yearsOfExperience"
+                     min="0">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Hourly Rate ($)</label>
+              <input type="number" class="form-control"
+                     [ngModel]="editForm().hourlyRate"
+                     (ngModelChange)="updateFormField('hourlyRate', $event)"
+                     name="hourlyRate"
+                     min="0">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Availability</label>
+              <select class="form-select"
+                      [ngModel]="editForm().availability"
+                      (ngModelChange)="updateFormField('availability', $event)"
+                      name="availability">
+                <option value="Available">Available</option>
+                <option value="Busy">Busy</option>
+                <option value="On Leave">On Leave</option>
+              </select>
+            </div>
+
+            <!-- Bio -->
+            <div class="col-12">
+              <label class="form-label">Bio / About Me</label>
+              <textarea class="form-control" rows="3"
+                        [ngModel]="editForm().bio"
+                        (ngModelChange)="updateFormField('bio', $event)"
+                        name="bio"
+                        placeholder="Tell clients about yourself..."></textarea>
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="col-md-6">
+              <label class="form-label">LinkedIn Profile</label>
+              <input type="text" class="form-control"
+                     [ngModel]="editForm().linkedIn"
+                     (ngModelChange)="updateFormField('linkedIn', $event)"
+                     name="linkedIn"
+                     placeholder="linkedin.com/in/yourprofile">
+            </div>
+
+            <!-- Expertise Selection -->
+            <div class="col-12">
+              <label class="form-label">Technologies & Expertise</label>
+              <p class="text-muted small">Select the technologies you specialize in:</p>
+              <div class="d-flex flex-wrap gap-2">
+                @for (tech of availableTechnologies; track tech) {
+                  <button type="button"
+                          class="btn btn-sm"
+                          [class.btn-primary]="isExpertiseSelected(tech)"
+                          [class.btn-outline-secondary]="!isExpertiseSelected(tech)"
+                          (click)="toggleExpertise(tech)">
+                    {{ tech }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="col-12">
+              <label class="form-label">Certifications</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control"
+                       [ngModel]="newCertification()"
+                       (ngModelChange)="newCertification.set($event)"
+                       name="newCert"
+                       placeholder="Add certification (e.g., AWS Solutions Architect)">
+                <button class="btn btn-outline-primary" type="button" (click)="addCertification()">
+                  <i class="bi bi-plus"></i> Add
+                </button>
+              </div>
+              @if (editForm().certifications && editForm().certifications!.length > 0) {
+                <div class="d-flex flex-wrap gap-2">
+                  @for (cert of editForm().certifications; track cert) {
+                    <span class="badge bg-warning text-dark">
+                      <i class="bi bi-award me-1"></i>{{ cert }}
+                      <button type="button" class="btn-close btn-close-sm ms-1" 
+                              (click)="removeCertification(cert)"
+                              style="font-size: 0.6rem;"></button>
+                    </span>
+                  }
+                </div>
+              } @else {
+                <small class="text-muted">No certifications added yet</small>
+              }
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-success" [disabled]="isSaving()">
+              @if (isSaving()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Saving...
+              } @else {
+                <i class="bi bi-check-lg me-1"></i>
+                Save Changes
+              }
+            </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelEditing()" [disabled]="isSaving()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

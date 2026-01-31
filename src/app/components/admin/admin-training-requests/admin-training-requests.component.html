@@ -1,0 +1,107 @@
+<div class="training-requests">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-send me-2"></i>
+      Training Requests
+    </h2>
+    <button class="btn btn-outline-primary" (click)="loadData()">
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Training Requests Table -->
+  @if (!isLoading()) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        @if (trainingRequests().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Trainer</th>
+                  <th>Client</th>
+                  <th>Technology</th>
+                  <th>Duration</th>
+                  <th>Budget</th>
+                  <th>Status</th>
+                  <th>Sent Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (request of trainingRequests(); track request.id) {
+                  <tr>
+                    <td><strong>#{{ request.id }}</strong></td>
+                    <td>
+                      <i class="bi bi-person-workspace me-1 text-success"></i>
+                      {{ request.trainerName }}
+                    </td>
+                    <td>
+                      <i class="bi bi-building me-1 text-info"></i>
+                      {{ request.clientName }}
+                    </td>
+                    <td>
+                      <span class="badge bg-secondary">{{ request.technology }}</span>
+                    </td>
+                    <td>{{ request.duration }}</td>
+                    <td>{{ formatCurrency(request.budget) }}</td>
+                    <td>
+                      <span class="badge" [class]="getStatusBadgeClass(request.status)">
+                        @if (request.status === 'Sent') {
+                          <i class="bi bi-clock me-1"></i>
+                        } @else if (request.status === 'Accepted') {
+                          <i class="bi bi-check-circle me-1"></i>
+                        } @else if (request.status === 'Rejected') {
+                          <i class="bi bi-x-circle me-1"></i>
+                        }
+                        {{ request.status }}
+                      </span>
+                    </td>
+                    <td>{{ formatDate(request.createdAt) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center p-5 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+            <h5>No Training Requests Yet</h5>
+            <p>Training requests sent to trainers will appear here.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Status Legend -->
+  <div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+      <h6 class="mb-3">Status Legend</h6>
+      <div class="d-flex gap-4">
+        <div>
+          <span class="badge bg-primary me-1">Sent</span>
+          Request sent to trainer, awaiting response
+        </div>
+        <div>
+          <span class="badge bg-success me-1">Accepted</span>
+          Trainer accepted the training request
+        </div>
+        <div>
+          <span class="badge bg-danger me-1">Rejected</span>
+          Trainer rejected the training request
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

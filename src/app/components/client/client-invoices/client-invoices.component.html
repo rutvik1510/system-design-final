@@ -1,0 +1,152 @@
+<div class="client-invoices">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-receipt me-2"></i>
+      My Invoices
+    </h2>
+    <button class="btn btn-outline-info" (click)="loadInvoices()">
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 bg-warning bg-opacity-10">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon-box bg-warning bg-opacity-25 text-warning">
+              <i class="bi bi-hourglass-split fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h3 class="mb-0">{{ formatCurrency(getTotalPending()) }}</h3>
+              <p class="text-muted mb-0">Pending Payment</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 bg-success bg-opacity-10">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon-box bg-success bg-opacity-25 text-success">
+              <i class="bi bi-check-circle fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h3 class="mb-0">{{ formatCurrency(getTotalPaid()) }}</h3>
+              <p class="text-muted mb-0">Total Paid</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 bg-info bg-opacity-10">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon-box bg-info bg-opacity-25 text-info">
+              <i class="bi bi-receipt fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h3 class="mb-0">{{ invoices().length }}</h3>
+              <p class="text-muted mb-0">Total Invoices</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-center p-5">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Invoices List -->
+  @if (!isLoading()) {
+    @if (invoices().length > 0) {
+      <div class="row g-4">
+        @for (invoice of invoices(); track invoice.id) {
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                  <i class="bi bi-receipt me-2 text-primary"></i>
+                  Invoice #INV-{{ invoice.id }}
+                </h6>
+                <span class="badge" [class]="getStatusBadgeClass(invoice.status)">
+                  {{ invoice.status }}
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <small class="text-muted">Technology</small>
+                    <p class="mb-0"><span class="badge bg-secondary">{{ invoice.technology }}</span></p>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Duration</small>
+                    <p class="mb-0">{{ invoice.duration }}</p>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <small class="text-muted">Trainer</small>
+                    <p class="mb-0">{{ invoice.trainerName }}</p>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Date</small>
+                    <p class="mb-0">{{ formatDate(invoice.createdAt) }}</p>
+                  </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-muted">Training Cost:</span>
+                  <span>{{ formatCurrency(invoice.trainingAmount) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-muted">Service Fee ({{ invoice.commissionPercent }}%):</span>
+                  <span>{{ formatCurrency(invoice.commissionAmount || 0) }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                  <span>Total Amount:</span>
+                  <span class="text-success fs-5">{{ formatCurrency(invoice.totalAmount) }}</span>
+                </div>
+              </div>
+              @if (invoice.status === 'Pending') {
+                <div class="card-footer bg-warning bg-opacity-10 text-center">
+                  <small class="text-warning">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Payment Pending
+                  </small>
+                </div>
+              } @else if (invoice.status === 'Paid') {
+                <div class="card-footer bg-success bg-opacity-10 text-center">
+                  <small class="text-success">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Paid on {{ invoice.paidAt ? formatDate(invoice.paidAt) : '-' }}
+                  </small>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center p-5 text-muted">
+          <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+          <h5>No Invoices Yet</h5>
+          <p>Invoices for your completed trainings will appear here.</p>
+        </div>
+      </div>
+    }
+  }
+</div>

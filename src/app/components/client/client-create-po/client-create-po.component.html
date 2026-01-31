@@ -1,0 +1,239 @@
+<div class="create-po">
+  <h2 class="mb-4">
+    <i class="bi bi-plus-circle me-2"></i>
+    Create Purchase Order
+  </h2>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">
+        <i class="bi bi-file-earmark-plus me-2 text-primary"></i>
+        Training Request Form
+      </h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="submitPO()">
+        <!-- Contact Information Section -->
+        <h6 class="text-primary mb-3 border-bottom pb-2">
+          <i class="bi bi-person-lines-fill me-2"></i>
+          Contact Information
+        </h6>
+        <div class="row g-3 mb-4">
+          <!-- Name -->
+          <div class="col-md-6">
+            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+            <input type="text" 
+                   class="form-control" 
+                   [ngModel]="name()"
+                   (ngModelChange)="name.set($event)"
+                   name="name"
+                   placeholder="Enter your full name"
+                   required>
+          </div>
+
+          <!-- Company Name -->
+          <div class="col-md-6">
+            <label class="form-label">Company Name <span class="text-danger">*</span></label>
+            <input type="text" 
+                   class="form-control" 
+                   [ngModel]="companyName()"
+                   (ngModelChange)="companyName.set($event)"
+                   name="companyName"
+                   placeholder="Enter company name"
+                   required>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6">
+            <label class="form-label">Email Address <span class="text-danger">*</span></label>
+            <input type="email" 
+                   class="form-control" 
+                   [ngModel]="email()"
+                   (ngModelChange)="email.set($event)"
+                   name="email"
+                   placeholder="Enter email address"
+                   required>
+          </div>
+
+          <!-- Phone -->
+          <div class="col-md-6">
+            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" 
+                   class="form-control" 
+                   [ngModel]="phone()"
+                   (ngModelChange)="phone.set($event)"
+                   name="phone"
+                   placeholder="Enter phone number (e.g., +91 9876543210)"
+                   required>
+          </div>
+        </div>
+
+        <!-- Training Details Section -->
+        <h6 class="text-primary mb-3 border-bottom pb-2">
+          <i class="bi bi-mortarboard me-2"></i>
+          Training Details
+        </h6>
+        <div class="row g-3 mb-4">
+          <!-- Training Requirement -->
+          <div class="col-12">
+            <label class="form-label">Training Requirement <span class="text-danger">*</span></label>
+            <textarea class="form-control" 
+                      [ngModel]="trainingRequirement()"
+                      (ngModelChange)="trainingRequirement.set($event)"
+                      name="trainingRequirement"
+                      rows="3"
+                      placeholder="Describe your training requirements, objectives, and expected outcomes..."
+                      required></textarea>
+            <div class="form-text">Provide a brief description of what you want to achieve from this training</div>
+          </div>
+
+          <!-- Technology -->
+          <div class="col-md-6">
+            <label class="form-label">Technology / Training Topic <span class="text-danger">*</span></label>
+            <select class="form-select" 
+                    [ngModel]="technology()"
+                    (ngModelChange)="technology.set($event)"
+                    name="technology"
+                    required>
+              <option value="">-- Select Technology --</option>
+              @for (tech of technologies; track tech) {
+                <option [value]="tech">{{ tech }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Duration -->
+          <div class="col-md-6">
+            <label class="form-label">Training Duration <span class="text-danger">*</span></label>
+            <select class="form-select" 
+                    [ngModel]="duration()"
+                    (ngModelChange)="duration.set($event)"
+                    name="duration"
+                    required>
+              <option value="">-- Select Duration --</option>
+              @for (dur of durations; track dur) {
+                <option [value]="dur">{{ dur }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Expected Start Date -->
+          <div class="col-md-6">
+            <label class="form-label">Expected Start Date <span class="text-danger">*</span></label>
+            <input type="date" 
+                   class="form-control" 
+                   [ngModel]="expectedStartDate()"
+                   (ngModelChange)="expectedStartDate.set($event)"
+                   name="expectedStartDate"
+                   [min]="getMinDate()"
+                   required>
+            <div class="form-text">Select when you'd like the training to begin</div>
+          </div>
+
+          <!-- Budget -->
+          <div class="col-md-6">
+            <label class="form-label">Budget (INR) <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input type="number" 
+                     class="form-control" 
+                     [ngModel]="budget()"
+                     (ngModelChange)="budget.set($event)"
+                     name="budget"
+                     placeholder="Enter budget amount"
+                     min="1"
+                     required>
+            </div>
+            <div class="form-text">Enter your training budget</div>
+          </div>
+        </div>
+
+        <!-- Summary Preview -->
+        @if (isFormValid()) {
+          <div class="mt-4 p-3 bg-light rounded">
+            <h6 class="mb-3">
+              <i class="bi bi-eye me-2"></i>
+              Order Preview
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Name</p>
+                <p class="fw-bold mb-2">{{ name() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Company</p>
+                <p class="fw-bold mb-2">{{ companyName() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Email</p>
+                <p class="fw-bold mb-2">{{ email() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Phone</p>
+                <p class="fw-bold mb-2">{{ phone() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Technology</p>
+                <p class="fw-bold mb-2">{{ technology() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Duration</p>
+                <p class="fw-bold mb-2">{{ duration() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Expected Start Date</p>
+                <p class="fw-bold mb-2">{{ expectedStartDate() }}</p>
+              </div>
+              <div class="col-md-4">
+                <p class="mb-1 text-muted small">Budget</p>
+                <p class="fw-bold mb-2 text-success">₹{{ budget() | number }}</p>
+              </div>
+              <div class="col-12">
+                <p class="mb-1 text-muted small">Training Requirement</p>
+                <p class="fw-bold mb-0">{{ trainingRequirement() }}</p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Actions -->
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="isSubmitting() || !isFormValid()">
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Submitting...
+            } @else {
+              <i class="bi bi-send me-1"></i>
+              Submit Purchase Order
+            }
+          </button>
+          <button type="button" 
+                  class="btn btn-outline-secondary" 
+                  (click)="resetForm()"
+                  [disabled]="isSubmitting()">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Info Card -->
+  <div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+      <h6 class="mb-3">
+        <i class="bi bi-info-circle me-2 text-info"></i>
+        What happens next?
+      </h6>
+      <ol class="mb-0">
+        <li class="mb-2">Your purchase order will be submitted to the admin</li>
+        <li class="mb-2">Admin will review and assign a suitable trainer</li>
+        <li class="mb-2">Trainer will accept or reject the training request</li>
+        <li>Once accepted, you'll see the trainer details in your dashboard</li>
+      </ol>
+    </div>
+  </div>
+</div>

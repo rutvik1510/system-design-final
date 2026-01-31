@@ -1,0 +1,398 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "name": "Admin User"
+    },
+    {
+      "id": "2",
+      "username": "trainer",
+      "password": "trainer123",
+      "role": "trainer",
+      "name": "Trainer User"
+    },
+    {
+      "id": "3",
+      "username": "client",
+      "password": "client123",
+      "role": "client",
+      "name": "Client User"
+    },
+    {
+      "id": "4",
+      "username": "sarah",
+      "password": "sarah123",
+      "role": "trainer",
+      "name": "Sarah Johnson"
+    },
+    {
+      "id": "5",
+      "username": "michael",
+      "password": "michael123",
+      "role": "trainer",
+      "name": "Michael Chen"
+    },
+    {
+      "id": "6",
+      "username": "emily",
+      "password": "emily123",
+      "role": "trainer",
+      "name": "Emily Davis"
+    },
+    {
+      "id": "7",
+      "username": "david",
+      "password": "david123",
+      "role": "trainer",
+      "name": "David Wilson"
+    },
+    {
+      "id": "8",
+      "username": "jessica",
+      "password": "jessica123",
+      "role": "trainer",
+      "name": "Jessica Martinez"
+    },
+    {
+      "id": "9",
+      "username": "robert",
+      "password": "robert123",
+      "role": "trainer",
+      "name": "Robert Brown"
+    },
+    {
+      "id": "10",
+      "username": "amanda",
+      "password": "amanda123",
+      "role": "trainer",
+      "name": "Amanda Taylor"
+    },
+    {
+      "id": "11",
+      "username": "christopher",
+      "password": "chris123",
+      "role": "trainer",
+      "name": "Christopher Lee"
+    },
+    {
+      "id": "12",
+      "username": "jennifer",
+      "password": "jennifer123",
+      "role": "trainer",
+      "name": "Jennifer White"
+    }
+  ],
+  "purchaseOrders": [
+    {
+      "id": "0575",
+      "clientId": "3",
+      "clientName": "Client User",
+      "companyName": "Tech Solutions Pvt Ltd",
+      "email": "client@techsolutions.com",
+      "phone": "+91 9876543210",
+      "trainingRequirement": "Need comprehensive React training for our development team including hooks, context API, and best practices.",
+      "technology": "React",
+      "duration": "1 Month",
+      "expectedStartDate": "2026-02-15",
+      "budget": 2334,
+      "status": "Invoiced",
+      "createdAt": "2026-01-30T10:32:26.808Z",
+      "assignedTrainerId": "1",
+      "assignedTrainerName": "Trainer User"
+    }
+  ],
+  "trainingRequests": [
+    {
+      "id": "4d51",
+      "purchaseOrderId": "0575",
+      "trainerId": "1",
+      "trainerName": "Trainer User",
+      "clientName": "Client User",
+      "technology": "React",
+      "duration": "1 Month",
+      "budget": 2334,
+      "status": "Completed",
+      "createdAt": "2026-01-30T10:32:49.436Z",
+      "completedAt": "2026-01-30T11:37:22.496Z"
+    }
+  ],
+  "trainers": [
+    {
+      "id": "1",
+      "userId": 2,
+      "name": "Trainer User",
+      "email": "trainer@edtech.com",
+      "phone": "+1-555-0101",
+      "expertise": [
+        "Angular",
+        "TypeScript",
+        "RxJS"
+      ],
+      "yearsOfExperience": 8,
+      "bio": "Senior Angular developer with 8+ years of experience in building enterprise applications.",
+      "certifications": [
+        "Google Cloud Certified",
+        "AWS Solutions Architect"
+      ],
+      "hourlyRate": 75,
+      "availability": "Available",
+      "rating": 4.8,
+      "totalTrainings": 45,
+      "linkedIn": "linkedin.com/in/traineruser",
+      "createdAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "userId": "4",
+      "name": "Sarah Johnson",
+      "email": "sarah.johnson@edtech.com",
+      "phone": "+1-555-0102",
+      "expertise": [
+        "React",
+        "Next.js",
+        "Node.js"
+      ],
+      "yearsOfExperience": 6,
+      "bio": "Full-stack developer specializing in React ecosystem and modern JavaScript frameworks.",
+      "certifications": [
+        "Meta React Developer",
+        "Node.js Certified Developer"
+      ],
+      "hourlyRate": 70,
+      "availability": "Available",
+      "rating": 4.9,
+      "totalTrainings": 38,
+      "linkedIn": "linkedin.com/in/sarahjohnson",
+      "createdAt": "2024-02-20T10:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "userId": "5",
+      "name": "Michael Chen",
+      "email": "michael.chen@edtech.com",
+      "phone": "+1-555-0103",
+      "expertise": [
+        "Java",
+        "Spring Boot",
+        "Microservices"
+      ],
+      "yearsOfExperience": 10,
+      "bio": "Enterprise Java architect with expertise in building scalable microservices.",
+      "certifications": [
+        "Oracle Certified Professional",
+        "Spring Professional"
+      ],
+      "hourlyRate": 85,
+      "availability": "Busy",
+      "rating": 4.7,
+      "totalTrainings": 62,
+      "linkedIn": "linkedin.com/in/michaelchen",
+      "createdAt": "2024-01-10T10:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "userId": "6",
+      "name": "Emily Davis",
+      "email": "emily.davis@edtech.com",
+      "phone": "+1-555-0104",
+      "expertise": [
+        "Python",
+        "Django",
+        "Machine Learning"
+      ],
+      "yearsOfExperience": 7,
+      "bio": "Python expert with a passion for data science and machine learning applications.",
+      "certifications": [
+        "TensorFlow Developer Certificate",
+        "AWS ML Specialty"
+      ],
+      "hourlyRate": 80,
+      "availability": "Available",
+      "rating": 4.8,
+      "totalTrainings": 41,
+      "linkedIn": "linkedin.com/in/emilydavis",
+      "createdAt": "2024-03-05T10:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "userId": "7",
+      "name": "David Wilson",
+      "email": "david.wilson@edtech.com",
+      "phone": "+1-555-0105",
+      "expertise": [
+        "AWS",
+        "Azure",
+        "DevOps"
+      ],
+      "yearsOfExperience": 9,
+      "bio": "Cloud infrastructure specialist with hands-on experience in AWS and Azure.",
+      "certifications": [
+        "AWS Solutions Architect Professional",
+        "Azure Administrator"
+      ],
+      "hourlyRate": 90,
+      "availability": "Available",
+      "rating": 4.6,
+      "totalTrainings": 55,
+      "linkedIn": "linkedin.com/in/davidwilson",
+      "createdAt": "2024-01-25T10:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "userId": "8",
+      "name": "Jessica Martinez",
+      "email": "jessica.martinez@edtech.com",
+      "phone": "+1-555-0106",
+      "expertise": [
+        "Vue.js",
+        "Nuxt.js",
+        "JavaScript"
+      ],
+      "yearsOfExperience": 5,
+      "bio": "Frontend specialist focused on Vue.js ecosystem and modern web development.",
+      "certifications": [
+        "Vue.js Certified Developer"
+      ],
+      "hourlyRate": 65,
+      "availability": "Available",
+      "rating": 4.9,
+      "totalTrainings": 28,
+      "linkedIn": "linkedin.com/in/jessicamartinez",
+      "createdAt": "2024-04-12T10:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "userId": "9",
+      "name": "Robert Brown",
+      "email": "robert.brown@edtech.com",
+      "phone": "+1-555-0107",
+      "expertise": [
+        "Docker",
+        "Kubernetes",
+        "CI/CD"
+      ],
+      "yearsOfExperience": 8,
+      "bio": "DevOps engineer with expertise in containerization and orchestration technologies.",
+      "certifications": [
+        "CKA - Certified Kubernetes Administrator",
+        "Docker Certified Associate"
+      ],
+      "hourlyRate": 85,
+      "availability": "On Leave",
+      "rating": 4.7,
+      "totalTrainings": 49,
+      "linkedIn": "linkedin.com/in/robertbrown",
+      "createdAt": "2024-02-08T10:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "userId": "10",
+      "name": "Amanda Taylor",
+      "email": "amanda.taylor@edtech.com",
+      "phone": "+1-555-0108",
+      "expertise": [
+        "Data Science",
+        "SQL",
+        "Tableau"
+      ],
+      "yearsOfExperience": 6,
+      "bio": "Data analyst and visualization expert helping organizations make data-driven decisions.",
+      "certifications": [
+        "Google Data Analytics",
+        "Tableau Desktop Specialist"
+      ],
+      "hourlyRate": 70,
+      "availability": "Available",
+      "rating": 4.8,
+      "totalTrainings": 34,
+      "linkedIn": "linkedin.com/in/amandataylor",
+      "createdAt": "2024-03-18T10:00:00.000Z"
+    },
+    {
+      "id": "9",
+      "userId": "11",
+      "name": "Christopher Lee",
+      "email": "christopher.lee@edtech.com",
+      "phone": "+1-555-0109",
+      "expertise": [
+        "iOS",
+        "Swift",
+        "SwiftUI"
+      ],
+      "yearsOfExperience": 7,
+      "bio": "iOS developer with extensive experience in building consumer and enterprise mobile apps.",
+      "certifications": [
+        "Apple Certified iOS Developer"
+      ],
+      "hourlyRate": 80,
+      "availability": "Busy",
+      "rating": 4.6,
+      "totalTrainings": 31,
+      "linkedIn": "linkedin.com/in/christopherlee",
+      "createdAt": "2024-01-30T10:00:00.000Z"
+    },
+    {
+      "id": "10",
+      "userId": "12",
+      "name": "Jennifer White",
+      "email": "jennifer.white@edtech.com",
+      "phone": "+1-555-0110",
+      "expertise": [
+        "Android",
+        "Kotlin",
+        "Flutter"
+      ],
+      "yearsOfExperience": 6,
+      "bio": "Mobile developer specializing in cross-platform development with Flutter and native Android.",
+      "certifications": [
+        "Google Associate Android Developer",
+        "Flutter Certified"
+      ],
+      "hourlyRate": 75,
+      "availability": "Available",
+      "rating": 4.9,
+      "totalTrainings": 37,
+      "linkedIn": "linkedin.com/in/jenniferwhite",
+      "createdAt": "2024-02-14T10:00:00.000Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "3155",
+      "type": "trainer-to-admin",
+      "purchaseOrderId": "0575",
+      "trainingRequestId": "4d51",
+      "trainerId": "1",
+      "trainerName": "Trainer User",
+      "technology": "React",
+      "duration": "1 Month",
+      "trainingAmount": 2334,
+      "totalAmount": 2334,
+      "status": "Approved",
+      "createdAt": "2026-01-30T11:37:25.411Z",
+      "approvedAt": "2026-01-30T11:38:07.409Z"
+    },
+    {
+      "id": "ad8f",
+      "type": "admin-to-client",
+      "purchaseOrderId": "0575",
+      "trainingRequestId": "4d51",
+      "trainerId": "1",
+      "trainerName": "Trainer User",
+      "clientId": "3",
+      "clientName": "Client User",
+      "technology": "React",
+      "duration": "1 Month",
+      "trainingAmount": 2334,
+      "commissionPercent": 19,
+      "commissionAmount": 443.46,
+      "totalAmount": 2777.46,
+      "status": "Pending",
+      "createdAt": "2026-01-30T11:38:07.419Z"
+    }
+  ],
+  "clients": []
+}
